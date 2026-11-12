@@ -1,0 +1,25 @@
+[project]
+name = "wiqaya"
+version = "0.1.0"
+description = "Opportunistic preventive screening from medical imaging (decision support)"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy", "scipy", "scikit-image", "nibabel", "pydicom>=3", "pillow", "python-gdcm", "pylibjpeg[all]",
+    "fastapi", "uvicorn[standard]", "python-multipart", "jinja2",
+]
+
+[project.optional-dependencies]
+models = ["torch", "TotalSegmentator>=2.4", "torchxrayvision"]
+dev = ["pytest", "httpx"]
+
+[project.scripts]
+wiqaya = "wiqaya.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["wiqaya*"]
+
+[tool.setuptools.package-data]
+wiqaya = ["web/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

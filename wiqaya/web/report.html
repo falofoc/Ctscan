@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تقرير وقاية — {{ rec.label }}</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#16202a;--mut:#5b6875;--line:#dde3e9;--brand:#0b6e6e;--brand2:#e6f3f2;
+--s0:#1e8e5a;--s1:#b7791f;--s2:#c8501e;--s3:#b42318;--s0b:#e8f6ee;--s1b:#fdf4e1;--s2b:#fdebe2;--s3b:#fde7e5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 "Segoe UI","Noto Naskh Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;border-bottom:3px solid var(--brand);padding-bottom:12px;margin-bottom:16px}
+h1{font-size:22px;margin:0;color:var(--brand)} h2{font-size:17px;margin:26px 0 10px;padding-right:10px;border-right:4px solid var(--brand)}
+.sub{color:var(--mut);font-size:13px}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.draft{background:var(--s1b);color:var(--s1);border:1px solid var(--s1)} .signed{background:var(--s0b);color:var(--s0);border:1px solid var(--s0)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.scope{background:var(--brand2);border:1px solid #b9dcd9;font-size:13.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 18px}
+.kv b{display:block;font-size:12px;color:var(--mut);font-weight:500}
+.finding{border-right:6px solid var(--line);break-inside:avoid}
+.finding.s0{border-right-color:var(--s0)} .finding.s1{border-right-color:var(--s1)} .finding.s2{border-right-color:var(--s2)} .finding.s3{border-right-color:var(--s3)}
+.finding h3{margin:0 0 4px;font-size:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sev.s0{background:var(--s0b);color:var(--s0)} .sev.s1{background:var(--s1b);color:var(--s1)} .sev.s2{background:var(--s2b);color:var(--s2)} .sev.s3{background:var(--s3b);color:var(--s3)}
+.rel{background:#eef1f4;color:var(--mut)}
+.en{direction:ltr;text-align:left;color:var(--mut);font-size:12.5px;margin-top:2px}
+.rec{background:#f7fafc;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;margin-top:8px}
+.rec b{color:var(--brand)}
+ul.cav{margin:8px 0 0;padding-right:18px;color:var(--mut);font-size:13px}
+.refs{font-size:12px;color:var(--mut);margin-top:6px;direction:ltr;text-align:left}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.imgs figure{margin:0;background:#000;border-radius:8px;overflow:hidden;break-inside:avoid}
+.imgs img{width:100%;display:block} .imgs figcaption{background:#111;color:#e8e8e8;font-size:12.5px;padding:6px 10px}
+table{width:100%;border-collapse:collapse;font-size:13.5px} th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:12.5px;background:#fafbfc}
+td.num{direction:ltr;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ok{color:var(--s0)} .no{color:var(--s2)} .qc-error{color:var(--s3)} .qc-warn{color:var(--s1)} .qc-info{color:var(--mut)}
+.review label{display:block;margin:8px 0 2px;font-size:13px;color:var(--mut)}
+.review input[type=text],.review textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;font:inherit}
+.decide{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px} .decide label{border:1px solid var(--line);border-radius:6px;padding:2px 10px;font-size:13px;cursor:pointer;background:#fff}
+button{background:var(--brand);color:#fff;border:0;border-radius:8px;padding:9px 18px;font:inherit;font-weight:600;cursor:pointer}
+button.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+footer{margin-top:30px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:10px}
+@media print{body{background:#fff;font-size:12.5px}.noprint{display:none!important}.wrap{max-width:none;padding:0}.card{border-color:#ccc}}
+</style>
+</head>
+<body><div class="wrap">
+{% if interactive %}<div class="bar noprint"><a href="/"><button class="ghost">→ قائمة الفحوص</button></a><button onclick="window.print()">طباعة / حفظ PDF</button></div>{% endif %}
+<header class="top">
+  <div><h1>وقاية — تقرير الفحص الانتهازي الوقائي</h1>
+  <div class="sub">Wiqaya · Opportunistic preventive imaging screening · v{{ res.version }}</div></div>
+  <div>{% if review %}<span class="badge signed">معتمد من: {{ review.reviewer }} · {{ review.ts }}</span>
+  {% else %}<span class="badge draft">مسودة آلية — غير معتمدة · بانتظار مراجعة أخصائي الأشعة</span>{% endif %}</div>
+</header>
+
+<div class="card scope">⚠ {{ res.scope_ar }}</div>
+
+<div class="card"><div class="grid">
+  <div class="kv"><b>الملف</b>{{ rec.label }}</div>
+  <div class="kv"><b>رقم السجل</b><span dir="ltr">{{ rec.id }}</span></div>
+  <div class="kv"><b>نوع الفحص</b>{{ res.meta.modality }}{% if res.meta.study_description %} · {{ res.meta.study_description }}{% endif %}</div>
+  <div class="kv"><b>تاريخ الفحص</b><span dir="ltr">{{ res.meta.study_date or "—" }}</span></div>
+  <div class="kv"><b>المعرّف المستعار للمريض</b><span dir="ltr">{{ res.meta.patient_pseudo_id or "—" }}</span></div>
+  <div class="kv"><b>العمر / الجنس</b>{{ res.meta.age|int if res.meta.age else "—" }} / {{ {"M":"ذكر","F":"أنثى"}.get(res.meta.sex, "—") }}</div>
+  <div class="kv"><b>الطول / الوزن</b>{{ "%.0f سم"|format(res.meta.height_m*100) if res.meta.height_m else "—" }} / {{ "%.0f كغ"|format(res.meta.weight_kg) if res.meta.weight_kg else "—" }}</div>
+  {% if res.kind == "ct" %}
+  <div class="kv"><b>حالة التباين (آليًا)</b>{{ res.qc.contrast.label_ar }}{% if res.qc.contrast.peak_blood_hu is defined %} <span class="sub" dir="ltr">({{ res.qc.contrast.peak_blood_hu }} HU)</span>{% endif %}</div>
+  <div class="kv"><b>kVp / السماكة / المرشح</b><span dir="ltr">{{ res.meta.kvp or "—" }} / {{ res.meta.slice_thickness or res.spacing_mm[2] }} mm / {{ res.meta.kernel or "—" }}</span></div>
+  <div class="kv"><b>أبعاد الحجم</b><span dir="ltr">{{ res.shape|join("×") }} @ {{ res.spacing_mm|join("×") }} mm</span></div>
+  {% endif %}
+</div></div>
+
+{% if res.status == "unsupported_modality" %}
+<div class="card finding s1"><h3>لا يوجد تحليل لهذا النوع من الفحوص</h3>{{ res.message_ar }}</div>
+{% endif %}
+
+{% if res.qc and res.qc["items"] %}
+<h2>ضبط الجودة</h2>
+<div class="card">{% for q in res.qc["items"] %}<div class="qc-{{ q.level }}">{{ {"error":"✖","warn":"▲","info":"•"}[q.level] }} {{ q.text_ar }}</div>{% endfor %}</div>
+{% endif %}
+
+{% macro show(f) %}
+<div class="card finding s{{ f.severity }}" data-finding="{{ f.id }}">
+  <h3>{{ f.title_ar }} <span class="badge sev s{{ f.severity }}">{{ SEVERITY[f.severity][0] }}</span>
+  <span class="badge rel">موثوقية القياس: {{ REL[f.reliability] }}</span>
+  {% if review and review.decisions.get(f.id) %}<span class="badge {{ 'signed' if review.decisions[f.id]=='confirmed' else 'draft' }}">{{ {"confirmed":"مؤكَّد","rejected":"مرفوض من الأخصائي","unsure":"يحتاج تقييمًا إضافيًا"}[review.decisions[f.id]] }}</span>{% endif %}</h3>
+  <div>{{ f.detail_ar }}</div><div class="en">{{ f.title_en }} — {{ f.detail_en }}</div>
+  {% if f.recommendation_ar %}<div class="rec"><b>التوصية الوقائية المقترحة:</b> {{ f.recommendation_ar }}</div>{% endif %}
+  {% if f.caveats_ar %}<ul class="cav">{% for c in f.caveats_ar %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+  {% if f.evidence %}<div class="refs">{% for e in f.evidence %}[{{ loop.index }}] {{ EVIDENCE[e].cite }} doi:{{ EVIDENCE[e].doi }}<br>{% endfor %}</div>{% endif %}
+  {% if interactive and not review %}<div class="decide noprint">
+    <label><input type="radio" name="d_{{ f.id }}" value="confirmed"> أؤكد</label>
+    <label><input type="radio" name="d_{{ f.id }}" value="rejected"> أرفض</label>
+    <label><input type="radio" name="d_{{ f.id }}" value="unsure"> يحتاج تقييمًا إضافيًا</label></div>{% endif %}
+</div>
+{% endmacro %}
+
+{% if findings %}
+<h2>النتائج التي تستدعي الانتباه ({{ flagged|length }})</h2>
+{% for f in flagged %}{{ show(f) }}{% else %}<div class="card">لا توجد نتائج غير طبيعية ضمن المجالات التي أمكن تقييمها.</div>{% endfor %}
+{% if normal %}<h2>نتائج مطمئنة / معلومات</h2>{% for f in normal %}{{ show(f) }}{% endfor %}{% endif %}
+{% endif %}
+
+{% if res.coverage %}
+<h2>ما الذي تم تقييمه؟</h2>
+<div class="card"><table><tr><th>المجال</th><th>الحالة</th><th>السبب</th></tr>
+{% for c in res.coverage %}<tr><td>{{ c.domain_ar }}</td><td class="{{ 'ok' if c.assessed else 'no' }}">{{ "✔ تم التقييم" if c.assessed else "✖ لم يُقيَّم" }}</td><td>{{ c.reason_ar }}</td></tr>{% endfor %}
+</table><div class="sub">«لم يُقيَّم» لا تعني «طبيعي».</div></div>
+{% endif %}
+
+{% if res.images %}
+<h2>الصور المفتاحية (موضع كل قياس)</h2>
+<div class="imgs">{% for im in res.images %}<figure><img alt="{{ im.title_ar }}" src="data:image/png;base64,{{ im.png }}"><figcaption>{{ im.title_ar }}</figcaption></figure>{% endfor %}</div>
+{% endif %}
+
+{% if res.measurements %}
+<h2>جدول القياسات</h2>
+<div class="card"><table><tr><th>القياس</th><th>القيمة</th><th>الموثوقية</th><th>ملاحظات تقنية</th></tr>
+{% for m in res.measurements %}<tr><td>{{ MEASURE_AR.get(m.key, m.key) }}{% if m.extra.level %} ({{ m.extra.level }}){% endif %}</td>
+<td class="num">{% if m.reliability == "invalid" %}<s>{{ m.value }}</s>{% else %}{{ m.value }}{% endif %} {{ m.unit }}</td>
+<td>{{ REL[m.reliability] }}</td><td dir="ltr" class="sub" style="text-align:left">{{ m.notes|join(", ") }}</td></tr>{% endfor %}
+</table></div>
+{% endif %}
+
+{% if interactive %}
+<h2 class="noprint">اعتماد أخصائي الأشعة</h2>
+<div class="card review noprint">
+{% if review %}<div>تم الاعتماد بواسطة <b>{{ review.reviewer }}</b> بتاريخ <span dir="ltr">{{ review.ts }}</span>.{% if review.comment %}<br>ملاحظات: {{ review.comment }}{% endif %}</div>
+{% elif rec.status == "done" %}
+  <div class="sub">حدّد قرارك لكل نتيجة أعلاه، ثم اعتمد التقرير. لا يُعد التقرير صالحًا للاستخدام السريري قبل الاعتماد.</div>
+  <label>اسم الأخصائي المعتمِد</label><input type="text" id="reviewer" autocomplete="off">
+  <label>ملاحظات</label><textarea id="comment" rows="2"></textarea>
+  <div style="margin-top:10px"><button onclick="submitReview()">اعتماد التقرير</button> <span id="rmsg" class="sub"></span></div>
+{% endif %}
+</div>
+<script>
+async function submitReview(){
+  const reviewer=document.getElementById('reviewer').value.trim(), msg=document.getElementById('rmsg');
+  if(!reviewer){msg.textContent='الرجاء إدخال اسم الأخصائي.';return}
+  const decisions={}; let missing=0;
+  document.querySelectorAll('[data-finding]').forEach(el=>{const id=el.dataset.finding;const c=el.querySelector('input[type=radio]:checked');
+    if(c)decisions[id]=c.value;else if(!el.classList.contains('s0'))missing++;});
+  if(missing){msg.textContent='يجب تحديد قرار لكل نتيجة غير طبيعية ('+missing+' متبقية).';return}
+  const h={'Content-Type':'application/json'};const t=sessionStorage.getItem('wiqaya_token');if(t)h['Authorization']='Bearer '+t;
+  const r=await fetch('/api/studies/{{ rec.id }}/review',{method:'POST',headers:h,body:JSON.stringify({reviewer,decisions,comment:document.getElementById('comment').value})});
+  if(r.ok)location.reload();else msg.textContent='تعذّر الحفظ: '+(await r.text());
+}
+</script>
+{% endif %}
+
+<footer>
+أُنتج آليًا بنظام «وقاية» v{{ res.version }} · <span dir="ltr">{{ res.created }}</span>
+{% if res.qc and res.qc.segmentation %} · التقطيع: <span dir="ltr">{{ res.qc.segmentation }}</span> ({{ res.qc.structures_found }} بنية){% endif %}
+{% if res.timings %} · زمن التحليل: {{ res.timings.total_s }} ث{% endif %}<br>
+<span dir="ltr">{{ res.scope_en }}</span>
+</footer>
+</div></body></html>
